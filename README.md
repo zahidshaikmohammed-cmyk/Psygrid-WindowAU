@@ -212,3 +212,7 @@ See docs/PROJECT_CONSTITUTION.md, docs/SIGNAL_ENGINE_SPEC.md and docs/ANTI_STARV
 The six setup family contracts are frozen in docs/SETUP_FAMILY_CONTRACTS.md. Actionability is separate from account execution capacity. Provider timestamp semantics begin UNVERIFIED and require explicit verification before production temporal decisions. Raw capture is observation-level and replay is causal. M5/M15/M30 use absolute UTC bucket alignment, with deterministic EMA/ATR initialization and zero-volume VWAP handling.
 
 Phase 1 begins only after the Phase-0 exit gate in docs/IMPLEMENTATION_ROADMAP.md passes.
+
+
+## Canonical source record
+The authoritative Phase-0 source definition is locked in `docs/CANONICAL_DATA_SOURCE.md`. The implementation must use the documented RealMarketAPI endpoint, XAUUSD extraction path and schema from that record; source changes require the documented change-control process.
