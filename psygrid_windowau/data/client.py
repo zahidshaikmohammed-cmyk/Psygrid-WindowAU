@@ -114,7 +114,7 @@ class RealMarketApiClient:
             if not isinstance(raw_candle, dict):
                 raise DataContractError(f"candles_1m[{index}] must be an object")
             allowed = set(REQUIRED_CANDLE_FIELDS) | {"bid", "ask"}
-            if set(raw_candle) != allowed:
+            if not set(raw_candle).issubset(allowed) or not set(REQUIRED_CANDLE_FIELDS).issubset(raw_candle):
                 missing = sorted(set(REQUIRED_CANDLE_FIELDS) - set(raw_candle))
                 extra = sorted(set(raw_candle) - allowed)
                 raise DataContractError(
