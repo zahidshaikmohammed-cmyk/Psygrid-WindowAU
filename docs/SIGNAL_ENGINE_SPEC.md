@@ -1,173 +1,230 @@
 # PSYGRID WindowAU — Signal Engine Specification
 
-Version 1.1 — Signal-Liveness Amendment
+Version 1.2 — Final Architecture Lock
 
-## 1. Runtime Loop
-
-On every newly closed M1 candle:
-1. validate feed;
+## 1. Runtime Cycle
+On each newly closed M1 candle:
+1. validate required feed;
 2. update M1 series;
-3. rebuild completed M5/M15/M30 views causally;
-4. update session;
-5. update volatility;
-6. update structural levels;
-7. evaluate every setup family independently;
-8. update opportunity states;
-9. evaluate M1 triggers;
-10. construct a safe trade plan using family-specific fallback rules;
-11. classify candidates as actionable or suppressed;
-12. rank actionable opportunities;
-13. send Telegram for a new actionable opportunity;
-14. persist the full decision and suppression telemetry.
+3. build completed M5/M15/M30 causally;
+4. update feature states;
+5. classify session/volatility/event status;
+6. evaluate all setup families independently;
+7. update candidate states;
+8. evaluate family-specific M1 trigger;
+9. build safe trade plan using fallback hierarchy;
+10. classify ACTIONABLE or explicit suppression;
+11. rank actionable opportunities;
+12. persist decision;
+13. attempt Telegram delivery;
+14. persist delivery result.
 
-## 2. Decision Pipeline
+## 2. Signal Object
+Every actionable signal must have:
+signal_id
+symbol
+family
+direction
+setup_anchor
+setup_start_time
+trigger_time
+entry
+stop
+target_1
+optional_target_2
+rr
+session
+volatility_state
+event_status
+horizon
+data_as_of
+feature_availability_summary
+historical_evidence_status
+research_score
+actionability_status
+risk_status
+created_at
 
+Signal existence is independent of Telegram success.
+
+## 3. Candidate Object
+Every candidate must have:
+candidate_id
+family
+direction
+setup_anchor
+setup_start_time
+state
+required_inputs_status
+feature_states
+setup_evidence
+trigger_evidence
+context_evidence
+trade_plan_status
+suppression_reason
+created_at
+updated_at
+expiry_time
+rearm_key
+
+## 4. Decision Pipeline
 SETUP FAMILY → MINIMUM VALID SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM
 
-This order is mandatory.
+No research score, probability, session preference or unrelated indicator may be inserted as a hidden mandatory stage.
 
-## 3. Context
+## 5. Family Contracts
+Each family implementation must declare:
+- minimum setup definition;
+- required inputs;
+- optional inputs;
+- timeframe dependencies;
+- trigger definition;
+- invalidation;
+- entry hierarchy;
+- stop hierarchy;
+- target hierarchy;
+- maximum lifetime;
+- duplicate key;
+- re-arm rule.
 
-Context contains trend, slope, volatility, VWAP location, structure, range/trend state and session.
+## 6. Timeframe Dependencies
+M30/M15/M5 are not globally mandatory.
 
-Context changes evidence. Context does not automatically veto a candidate.
+A family declares the minimum timeframe data it intrinsically requires.
 
-M30/M15 may be unavailable, neutral or conflicting. These states must be represented explicitly.
+Missing optional MTF context is represented as UNAVAILABLE and may alter evidence/ranking only.
 
-## 4. Setup Evidence
+## 7. Feature States
+AVAILABLE = valid value at decision time.
+UNAVAILABLE = not present or insufficient history, but not corrupt.
+INVALID = present but fails integrity rules.
 
-Setup evidence can contain sweep, rejection, displacement, pullback, breakout, acceptance, failure and range location.
+Optional UNAVAILABLE does not become zero and does not block a signal.
 
-Each family uses only relevant features. No family may require unrelated indicators merely to increase model agreement.
+Required INVALID/UNAVAILABLE blocks only the affected family unless the failure is global feed invalidity.
 
-## 5. Trigger Evidence
+## 8. Historical Probability
+If sample is insufficient, preserve candidate and mark INSUFFICIENT_SAMPLE.
 
-M1 timing evidence can include micro-structure break, reclaim, rejection, higher low/lower high, momentum return, retest and micro-range break.
+Do not fabricate a percentage.
 
-M1 timing cannot create a trade thesis without a setup.
+Probability evidence is separate from actionability.
 
-## 6. Minimum Viable Signal Contract
+## 9. Trade Plan
+For each family:
+preferred entry → secondary entry → safe fallback entry
+preferred stop → secondary stop → volatility-adjusted structural stop → safe fallback
+preferred target → secondary target → measured/volatility target → empirical target where available
 
-A candidate can become ACTIONABLE when:
-- family-specific minimum setup definition is met;
-- valid M1 trigger is present;
-- feed/data quality is sufficient;
-- entry is executable;
-- safe stop/invalidation exists;
-- at least one target exists;
-- maximum horizon is defined;
-- opportunity is not a duplicate;
-- explicit safety/risk rules permit it.
+If all safe methods fail: INVALID_TRADE_PLAN.
 
-Optional research evidence does not belong in this mandatory chain.
+R:R is calculated after independent plan construction.
 
-## 7. Historical Probability
+## 10. Actionability
+ACTIONABLE requires only the minimum safety path:
+minimum setup + trigger + required data + executable entry + safe stop + target + horizon + duplicate check + risk/safety permission.
 
-If sample size is insufficient:
-- preserve the candidate;
-- mark evidence INSUFFICIENT_SAMPLE;
-- do not fabricate a percentage;
-- do not automatically suppress the candidate.
+No ranking cutoff exists.
 
-When enough observations exist, report sample size, estimate, uncertainty and calibration quality.
+## 11. Ranking
+Rank only ACTIONABLE opportunities.
 
-## 8. Trade-Plan Construction
+Ranking variables may include evidence, conflicts, historical expectancy, uncertainty, execution quality, maturity, session and volatility.
 
-Every setup family must define fallback hierarchies for entry, stop and target.
+Ranking must not remove an opportunity from existence.
 
-Preferred structural method → secondary structural method → volatility-adjusted structural method → documented safe fallback.
+## 12. Execution Capacity
+Execution capacity is separate from signal generation.
 
-If all safe methods fail, suppress with INVALID_TRADE_PLAN and record the exact failed condition.
+A valid signal may exist even when a live account cannot safely add exposure. Such a condition is recorded as execution/risk status, not rewritten as NO_SETUP.
 
-No silent suppression.
+## 13. Session/Volatility
+Session and volatility affect evidence, priority and research stratification.
 
-## 9. Ranking
+They do not universally suppress signals.
 
-Each actionable candidate receives evidence score, conflict score, empirical expectancy where available, uncertainty, execution quality and maturity.
+## 14. Event Status
+Event status is one of:
+VERIFIED_EVENT
+VERIFIED_NO_EVENT
+UNKNOWN
 
-The ranker orders actionable candidates.
+Only VERIFIED_EVENT plus an explicit configured time window may create EXPLICIT_EVENT_BLACKOUT.
 
-There is no universal score requirement for actionability.
+UNKNOWN never means VERIFIED_NO_EVENT.
 
-## 10. Setup Independence
+## 15. Duplicate/Re-Arm
+Duplicate identity includes symbol, family, direction, structural anchor and setup-start identity.
 
-All six setup families are evaluated independently.
+A candidate may re-arm after explicit invalidation/expiry when a new qualifying setup event occurs.
 
-One family returning no candidate, an error state or an expired opportunity must not suppress other families.
+Duplicate detection must not collapse distinct events around the same broad price level.
 
-## 11. Session and Volatility
+## 16. Expiry
+Each family defines maximum candidate lifetime.
 
-Session and volatility are conditioning variables and prioritization inputs.
+Expiry is a recorded state transition, not silent deletion.
 
-They may change evaluation priority, evidence weight, expected behavior, ranking and research stratification.
+## 17. Suppression
+Every non-actionable candidate receives:
+DATA_INVALID
+DUPLICATE
+NO_MINIMUM_SETUP
+NO_TRIGGER
+INVALID_TRADE_PLAN
+RISK_LIMIT
+EXPLICIT_EVENT_BLACKOUT
+EXPIRED
+or OTHER_DOCUMENTED_REASON.
 
-They do not automatically disable signal generation.
+NO_HIGH_EDGE is prohibited.
 
-## 12. Event Risk
+## 18. Warm-Up
+The engine may preload history for stable indicators.
 
-Scheduled high-impact events may reduce confidence, require post-event confirmation or apply a configured temporary pause.
+If optional history is absent, feature state is UNAVAILABLE.
 
-Any blackout must be explicit, time-bounded, instrument-relevant and logged as EXPLICIT_EVENT_BLACKOUT.
+Global signal starvation during EMA200/ATR-percentile warm-up is prohibited.
 
-## 13. Duplicate Control
+## 19. Telemetry
+At every completed M1 cycle record:
+- candidates by family;
+- state counts;
+- trigger counts;
+- actionable counts;
+- suppression counts/reasons;
+- last valid candidate;
+- last actionable candidate;
+- last Telegram attempt/result;
+- data quality;
+- feature availability;
+- event status;
+- engine heartbeat.
 
-Opportunity identity uses symbol, setup family, structural anchor, setup start time and direction.
+## 20. Liveness Test Matrix
+Mandatory tests:
+- neutral M30/M15;
+- insufficient probability sample;
+- preferred-session false;
+- conflicting optional indicator;
+- low research score;
+- preferred stop unavailable;
+- preferred target unavailable;
+- optional feature unavailable;
+- family-specific required input unavailable;
+- one family exception;
+- high volatility;
+- low volatility;
+- session transition;
+- event UNKNOWN;
+- duplicate vs new setup/re-arm;
+- Telegram failure;
+- execution-capacity restriction.
 
-Identity must not be so broad that separate valid setups are accidentally treated as duplicates.
+## 21. Persistence Order
+Persist the signal/candidate decision before Telegram.
 
-## 14. Invalidation
+Telegram delivery is an output side effect, not part of signal validity.
 
-Candidate expires when structure is invalidated, setup exceeds its research lifetime, entry becomes materially stale, opportunity becomes unexecutable or required data quality fails.
-
-Every invalidation is recorded.
-
-## 15. Suppression Ledger
-
-Every non-actionable candidate receives one explicit reason:
-DATA_INVALID, DUPLICATE, NO_MINIMUM_SETUP, NO_TRIGGER, INVALID_TRADE_PLAN, RISK_LIMIT, EXPLICIT_EVENT_BLACKOUT, EXPIRED or OTHER_DOCUMENTED_REASON.
-
-NO_HIGH_EDGE is prohibited as a suppression reason.
-
-## 16. Telegram
-
-Every actionable alert should show:
-PSYGRID XAUUSD, Direction, Setup family, Entry, SL, TP1/TP2, R:R, Session, Volatility state, Structural reason, M1 trigger, Expected holding horizon, Historical sample size, Historical expectancy, Probability status, Timestamp and Data quality.
-
-If historical probability is unavailable, show INSUFFICIENT_SAMPLE.
-
-## 17. Frequency and Liveness Telemetry
-
-Persist candidates by family, developing setups, triggers, actionable candidates, alerts, expired candidates, suppressed candidates, suppression reason, last valid candidate time, last actionable time, last Telegram delivery and data-quality state.
-
-This distinguishes a quiet market from a broken or over-filtered engine.
-
-## 18. Required Liveness Tests
-
-Required before production:
-- valid setup + neutral M30/M15 → actionable;
-- valid setup + insufficient history → actionable;
-- valid setup outside preferred session → actionable;
-- one conflicting indicator → still actionable when minimum path is complete;
-- low research rank → not blocked solely by ranking;
-- preferred stop unavailable → safe fallback used;
-- preferred target unavailable → safe fallback used;
-- every suppression has a reason;
-- all setup families run independently;
-- one family failure does not suppress others;
-- high volatility is not a universal blocker;
-- low volatility is not a universal blocker;
-- session is not a universal blocker.
-
-## 19. Persistence
-
-Persist the candidate before Telegram delivery.
-
-Telegram delivery status is separate from signal existence.
-
-A Telegram failure must not erase or suppress the underlying actionable opportunity.
-
-## 20. Core Principle
-
-Minimum safety path first. Ranking second.
-
-Additional evidence should improve prioritization and research quality without silently destroying valid opportunity paths.
+## 22. Core Principle
+Minimum safety path first. Ranking second. Notification third.
