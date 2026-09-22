@@ -44,3 +44,14 @@ def test_wrong_schema_fails_explicitly():
 def test_non_canonical_url_is_rejected():
     with pytest.raises(DataContractError):
         RealMarketApiClient(url="https://example.com").fetch_json()
+
+
+def test_bid_ask_are_optional():
+    payload = deepcopy(PAYLOAD)
+    for candle in payload["symbols"]["XAUUSD"]["candles_1m"]:
+        del candle["bid"]
+        del candle["ask"]
+    snapshot = RealMarketApiClient().parse_snapshot(payload)
+    assert len(snapshot.candles) == 2
+    assert snapshot.candles[0].bid is None
+    assert snapshot.candles[0].ask is None
