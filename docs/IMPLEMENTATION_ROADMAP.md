@@ -123,6 +123,31 @@ Modules:
 
 Each detector returns a structured candidate and never a raw BUY/SELL string.
 
+
+## Phase-3 implementation status
+
+Phase 3 has started with the six independent setup-family detectors and structured candidate model.
+
+Implemented:
+- setups/models.py — version-neutral structured candidate + family/direction types;
+- setups/common.py — causal structural/robust-baseline helpers;
+- setups/sweep.py — LSR minimum setup detection;
+- setups/pullback.py — EPC minimum setup detection;
+- setups/breakout.py — BOA and BOF detection;
+- setups/rejection.py — RRE detection;
+- setups/continuation.py — SPC detection;
+- tests/test_setups.py — initial family, insufficiency and causal-prefix coverage.
+
+Boundary:
+- detectors return structured candidates, never raw BUY/SELL strings;
+- Phase 4 M1 trigger execution, Phase 5 trade planning, actionability, ranking, persistence and Telegram are not implemented here;
+- research parameters are explicit inputs rather than hidden universal gates;
+- provider timestamp semantics remain UNVERIFIED, so production temporal signal generation remains disabled.
+
+Validation status:
+- implementation commit: 6dbe64aa7009a900c461cb8d518b8af958326f01;
+- GitHub Actions status for this commit is not yet reported by the connected GitHub Actions interface, so this Phase-3 implementation is NOT marked validated or complete.
+
 ## Phase 4 — M1 trigger engine
 Module: trigger/m1.py
 
