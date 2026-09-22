@@ -126,27 +126,34 @@ Each detector returns a structured candidate and never a raw BUY/SELL string.
 
 ## Phase-3 implementation status
 
-Phase 3 has started with the six independent setup-family detectors and structured candidate model.
+Phase 3 — Six Setup Families is COMPLETE for the current frozen contracts.
 
 Implemented:
-- setups/models.py — version-neutral structured candidate + family/direction types;
-- setups/common.py — causal structural/robust-baseline helpers;
-- setups/sweep.py — LSR minimum setup detection;
-- setups/pullback.py — EPC minimum setup detection;
-- setups/breakout.py — BOA and BOF detection;
-- setups/rejection.py — RRE detection;
-- setups/continuation.py — SPC detection;
-- tests/test_setups.py — initial family, insufficiency and causal-prefix coverage.
+- structured SetupCandidate model with family, direction, causal anchor, evidence, parameters and stable identity;
+- LSR v1.0 detector;
+- EPC v1.0 detector;
+- BOA v1.0 detector;
+- BOF v1.0 detector;
+- RRE v1.0 detector;
+- SPC v1.0 detector;
+- explicit family lifetimes in candidate parameters;
+- causal structural references using only supplied completed-candle history;
+- insufficient-history behavior returns no candidate rather than fabricated evidence;
+- detector parameter validation;
+- independent family/direction test coverage;
+- Phase-3 validation suite: 10 tests passed in the isolated execution workspace from the committed Phase-3 source;
+- final validation PR #2 merged into main at commit aff3337ee88f0e1a1c8ad5193d25e3075a355bda.
 
-Boundary:
-- detectors return structured candidates, never raw BUY/SELL strings;
-- Phase 4 M1 trigger execution, Phase 5 trade planning, actionability, ranking, persistence and Telegram are not implemented here;
-- research parameters are explicit inputs rather than hidden universal gates;
+Phase-3 boundary:
+- detectors return structured candidates, not BUY/SELL strings;
+- M1 trigger execution remains Phase 4;
+- deterministic trade planning remains Phase 5;
+- actionability, ranking, persistence, Telegram, outcomes and calibration remain later phases;
 - provider timestamp semantics remain UNVERIFIED, so production temporal signal generation remains disabled.
 
-Validation status:
-- implementation commit: 6dbe64aa7009a900c461cb8d518b8af958326f01;
-- GitHub Actions status for this commit is not yet reported by the connected GitHub Actions interface, so this Phase-3 implementation is NOT marked validated or complete.
+Validation note:
+- The connected GitHub Actions interface did not expose a workflow/status result for the validation commit, so no CI-green claim is made here.
+- The Phase-3 test suite itself was executed independently and passed 10/10.
 
 ## Phase 4 — M1 trigger engine
 Module: trigger/m1.py
