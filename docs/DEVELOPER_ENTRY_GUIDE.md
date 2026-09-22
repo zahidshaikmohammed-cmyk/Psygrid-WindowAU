@@ -334,8 +334,8 @@ A correct implementation:
 - anti-starvation rules: LOCKED;
 - future macro/news extension point: RESERVED;
 - Telegram repository secrets: CONFIGURED;
-- implementation: NOT YET BUILT;
+- Phase 1 data-layer implementation: COMPLETE;\n- Phase 2 mathematical feature engine: COMPLETE;
 - production signal generation: NOT ENABLED;
 - broker execution: NOT IMPLEMENTED.
 
-The next engineering task is Phase 1 data-layer implementation.
+The next engineering task is Phase 3 setup-family detector implementation.
