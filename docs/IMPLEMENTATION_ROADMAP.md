@@ -47,7 +47,42 @@ Modules:
 
 Every feature returns value + availability state + provenance/as_of.
 
-## Phase 3 — Family contracts and setup detectors
+## Phase-2 implementation status
+
+Phase 2 mathematical feature engine is complete for the currently locked mathematical specification.
+
+Implemented modules:
+- features/returns.py
+- features/volatility.py
+- features/trend.py
+- features/vwap.py
+- features/structure.py
+- features/candle_geometry.py
+- features/momentum.py
+
+Implemented and tested:
+- simple and log returns;
+- true range and deterministic Wilder ATR initialization/update;
+- rolling ATR;
+- realized volatility from log returns;
+- ATR percentile capability;
+- EMA 9/20/50/200-compatible calculation with simple-mean initialization;
+- EMA slope;
+- trend persistence, directional run length and higher-high/higher-low counts;
+- session feed-volume VWAP with explicit zero-volume UNAVAILABLE state;
+- candle range/body/wick geometry and normalized wick values;
+- causal prior structural high/low levels;
+- pullback depth;
+- displacement ratios using prior robust median baselines;
+- compression ratio.
+
+Validation:
+- GitHub Actions CI run 35778416893: success;
+- latest validated commit: cee5397a36f1e7e136c917d1afa3b418713d2b60.
+
+Phase-2 boundary remains intact: no setup-family detection, trigger generation, ranking, Telegram runtime, broker execution or live signal generation was added.
+
+## Phase 3 — Family contracts and setup detectors/
 Before detector code, create one versioned contract per family.
 
 Modules:
