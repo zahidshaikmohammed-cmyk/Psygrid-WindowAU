@@ -171,3 +171,7 @@ Phase 0 is GREEN only when:
 - the final architecture audit passes with no unresolved blockers.
 
 Phase 1 implementation may begin only after this gate is satisfied.
+
+
+## Canonical source record
+The authoritative Phase-0 source definition is locked in `docs/CANONICAL_DATA_SOURCE.md`. The implementation must use the documented RealMarketAPI endpoint, XAUUSD extraction path and schema from that record; source changes require the documented change-control process.
