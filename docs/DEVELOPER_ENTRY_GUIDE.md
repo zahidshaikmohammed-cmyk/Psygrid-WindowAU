@@ -336,8 +336,8 @@ A correct implementation:
 - Telegram repository secrets: CONFIGURED;
 - Phase 1 data-layer implementation: COMPLETE;
 - Phase 2 mathematical feature engine: COMPLETE AND LOCKED;
-- Phase 3 six setup-family detectors: IMPLEMENTED; pre-Phase-4 contract audit fixes applied; final runtime validation pending;
+- Phase 3 six setup-family detectors: COMPLETE AND VALIDATED; post-audit contract and negative-path coverage passed;
 - production signal generation: NOT ENABLED;
 - broker execution: NOT IMPLEMENTED.
 
-Phase 2 is locked under the roadmap change-control record. Phase 3 has been implemented and audited. The next engineering task is Phase 4 family-specific M1 trigger implementation.
+Phase 2 is locked under the roadmap change-control record. Phase 3 is now locked for the current v1.0 contracts after the post-audit validation gate. Fresh GitHub Actions CI run 35781896563 passed 54 tests on commit 4efc274c243e1f9305e4f228079af122b9f976b7. The next engineering task is Phase 4 family-specific M1 trigger implementation.
