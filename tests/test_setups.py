@@ -17,8 +17,8 @@ def cs(rows):
 
 
 def test_lsr_long_and_short_require_subsequent_return_candle():
-    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13), (13, 13.5, 11, 11.5)])
-    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 9), (9, 10, 8.5, 11.5)])
+    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 10, 11), (11, 14, 10, 13), (13, 13.5, 11, 11.5)])
+    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 9, 10), (10, 12, 7, 9), (9, 10, 8.5, 11.5)])
     assert detect_lsr(short, lookback=3).direction is SetupDirection.SHORT
     assert detect_lsr(long, lookback=3).direction is SetupDirection.LONG
     assert detect_lsr(short[:-1], lookback=3) is None
@@ -33,14 +33,14 @@ def test_boa_requires_break_and_persistence():
 
 def test_bof_long_and_short_are_independent():
     short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11), (11, 13, 8, 9.5)])
-    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 9), (9, 10, 8, 10.5)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 10, 8, 9), (9, 10, 8, 10.5)])
     assert detect_bof(short, lookback=2).direction is SetupDirection.SHORT
     assert detect_bof(long, lookback=2).direction is SetupDirection.LONG
 
 
 def test_rre_long_and_short():
     short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 10.5)])
-    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 9.5)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 10.5, 8, 9.5)])
     assert detect_rre(short, lookback=2).direction is SetupDirection.SHORT
     assert detect_rre(long, lookback=2).direction is SetupDirection.LONG
 
@@ -65,8 +65,8 @@ def test_candidates_have_lifetime_and_stable_identity():
 
 
 def test_detectors_are_causal_to_supplied_prefix():
-    prefix = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13)])
-    future = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13), (13, 20, 12, 19)])
+    prefix = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11.5), (11.5, 12, 11.1, 11.7)])
+    future = prefix + cs([(11.7, 20, 11.5, 19)])
     before = detect_boa(prefix, lookback=2)
     replayed = detect_boa(future[:3], lookback=2)
     assert before and replayed
@@ -129,7 +129,7 @@ def test_spc_rejects_pullback_that_breaks_structural_boundary():
 
 
 def test_all_families_have_directional_and_negative_paths():
-    assert detect_lsr(cs([(10,11,9,10),(10,12,9,11),(11,14,10,13),(13,13.5,11,11.5)]), lookback=3)
+    assert detect_lsr(cs([(10,11,9,10),(10,12,9,11),(11,12,10,11),(11,14,10,13),(13,13.5,11,11.5)]), lookback=3)
     assert detect_epc(cs([(10,11,9,10),(10,11,9,10),(10,14,9,13),(13,13.5,11.5,12.5),(12.5,13,12,12.8)]), baseline_lookback=2, expansion_multiple=1.5, max_pullback_bars=3)
     assert detect_boa(cs([(10,11,9,10),(10,11,9,10),(10,12,9,11.5),(11.5,12,11.1,11.7)]), lookback=2)
     assert detect_bof(cs([(10,11,9,10),(10,11,9,10),(10,12,9,11),(11,13,8,9.5)]), lookback=2)
