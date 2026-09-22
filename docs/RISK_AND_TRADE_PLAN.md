@@ -1,82 +1,79 @@
 # PSYGRID WindowAU — Risk and Trade Plan
 
 ## 1. Purpose
-
 Convert a detected setup into a measurable plan without manufacturing setups.
 
-## 2. Required fields
+## 2. Required Plan
+Every actionable plan contains:
+entry, stop, target, stop distance, target distance, R:R, maximum horizon, invalidation and risk status.
 
-- entry;
-- stop;
-- target;
-- stop distance;
-- target distance;
-- R:R;
-- risk fraction;
-- position size only when broker contract data is verified;
-- maximum holding horizon;
-- invalidation.
+Position size is separate and only exists when broker contract specifications are verified.
 
-## 3. Stop logic
+## 3. Entry Hierarchy
+Each family must define:
+1. preferred structural entry;
+2. secondary structural entry;
+3. documented safe fallback entry.
 
-Candidate anchors:
+Entry cannot be manufactured merely to satisfy a desired R:R.
 
-- beyond swept high/low;
-- beyond pullback invalidation;
-- beyond breakout failure level;
-- volatility-adjusted structural buffer.
+## 4. Stop Hierarchy
+Default architecture:
+1. setup-specific structural invalidation;
+2. secondary structural invalidation;
+3. volatility-adjusted structural buffer;
+4. documented conservative fallback.
 
 A universal fixed-dollar stop is prohibited.
 
-## 4. Target logic
+## 5. Target Hierarchy
+Default architecture:
+1. nearest valid structural target;
+2. opposing/next structural level;
+3. measured move or range projection;
+4. volatility projection;
+5. empirical MFE-derived target when sample permits.
 
-Targets may use:
+Target is independently justified. R:R is measured afterward.
 
-- structural level;
-- range midpoint;
-- opposite range extreme;
-- measured move;
-- volatility projection;
-- empirical MFE distribution.
+## 6. Invalid Plan
+If every safe entry/stop/target method fails:
+INVALID_TRADE_PLAN
 
-Do not choose a target solely to make R:R attractive.
+Record the exact failed methods and data conditions.
 
-## 5. Risk
+## 7. Risk vs Signal
+A research/actionable signal and a live execution permission are separate objects.
 
-Support:
+Risk limits may prevent execution without rewriting the underlying structural signal as NO_SETUP.
 
-- fixed fractional risk;
-- fixed monetary risk;
-- maximum daily loss;
-- maximum concurrent exposure.
+For live trading, a hard risk limit remains a safety gate on execution.
 
-Live risk limits are hard safety controls.
-
-## 6. Position size
-
+## 8. Position Sizing
 R_$ = Equity × RiskFraction
 
 PositionSize = R_$ / (StopDistance × ContractValue)
 
-Contract value must be verified for the actual broker/account.
+Broker contract value must be verified before live sizing.
 
-## 7. Execution
-
-Research must model:
-
+## 9. Execution Research
+Model:
 - spread;
 - slippage;
 - latency;
-- rejection/partial fill where relevant.
+- rejection;
+- partial fill where relevant.
 
-## 8. Holding horizon
+## 10. Holding Horizon
+Initial maximum research horizon: 30 minutes.
 
-Initial maximum: 30 minutes.
+Buckets:
+1–3, 3–5, 5–10, 10–15, 15–20, 20–30 minutes.
 
-Measure shorter buckets to discover where the edge actually occurs.
+## 11. Emergency Behavior
+If required feed data becomes unreliable or a safe plan cannot be calculated, no new live execution occurs.
 
-## 9. Emergency behavior
+Existing-position management remains deterministic.
 
-If the feed becomes unreliable or a safe trade plan cannot be calculated, no new position is opened.
-
-Existing-position management must remain deterministic.
+## 12. No R:R Gate
+R:R is descriptive unless a setup-specific validated safety rule explicitly requires a minimum geometry. Do not reject a structurally valid signal merely because an arbitrary universal R:R target is not reached.
