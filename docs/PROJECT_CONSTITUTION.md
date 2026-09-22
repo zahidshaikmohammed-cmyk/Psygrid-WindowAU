@@ -1,112 +1,27 @@
 # PSYGRID WindowAU — Permanent Project Constitution
 
-Version 1.1 — Signal-Liveness Amendment
+Version 1.2 — Final Architecture Lock
 Instrument: XAUUSD
 
 ## 1. Mission
+Create a precise, empirical XAUUSD intraday intelligence and signal engine that discovers valid opportunities without manufacturing trades or suppressing genuine opportunities through accidental conjunctive filtering.
 
-Create a precise, empirical XAUUSD intraday engine that acts when a valid setup and trigger exist, while never manufacturing trades and never suppressing genuine opportunities through excessive conjunctive filtering.
+## 2. Canonical Architecture
+DATA → QUALITY → MTF BUILDER → FEATURES → INDEPENDENT SETUP FAMILIES → MINIMUM SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM → OUTCOME → CALIBRATION
 
-## 2. Signal-Liveness Contract
+Broker order execution is a later external layer. WindowAU's signal validity never depends on Telegram delivery or broker execution.
 
-Canonical flow:
+## 3. Signal-Liveness Contract
+The mandatory decision path is:
 
 SETUP FAMILY → MINIMUM VALID SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM
 
-Ranking is prioritization. It is not a hidden elimination gate.
+Ranking is prioritization, not a universal signal cutoff.
 
-Historical probability, higher-timeframe agreement, preferred session, volatility state, indicator agreement and research scores are normally evidence, not mandatory prerequisites.
+Historical probability, perfect higher-timeframe agreement, preferred session, preferred volatility state, full indicator agreement and research score are not universal prerequisites.
 
-## 3. Anti-Starvation Rule
-
-No universal AND-gate may require every model, timeframe and indicator to agree.
-
-Each setup family gets an independent detection path and is evaluated independently on every eligible closed M1 update.
-
-One family's failure must not suppress another family.
-
-Context is evidence, not a veto by default.
-
-## 4. Minimum Actionable Path
-
-A candidate may become ACTIONABLE when:
-1. minimum setup evidence for that family exists;
-2. a valid M1 trigger exists;
-3. the feed is valid and sufficiently fresh;
-4. entry is executable;
-5. a safe stop/invalidation level exists;
-6. at least one valid target exists;
-7. the research maximum holding horizon is defined;
-8. the opportunity is not a duplicate;
-9. explicit risk/safety rules permit the action.
-
-This is the minimum safety path. It is not a requirement for every indicator or model to agree.
-
-## 5. Hard-Gate Doctrine
-
-Hard gates may block only objective conditions such as:
-- invalid or stale data;
-- impossible prices or OHLC;
-- timestamp corruption;
-- data required intrinsically by that setup family is unavailable;
-- duplicate opportunity;
-- invalid trade geometry;
-- explicit risk-limit violation;
-- explicit configured safety blackout;
-- execution-safety failure.
-
-Strategy evidence must normally be soft-scored.
-
-Prohibited blanket gates:
-- all indicators must agree;
-- arbitrary model-agreement percentage;
-- one universal score cutoff;
-- one universal ATR cutoff;
-- one universal probability cutoff;
-- insufficient historical sample = no signal;
-- non-preferred session = no signal;
-- high volatility = no signal;
-- low volatility = no signal;
-- neutral/conflicting M30 or M15 = no signal;
-- preferred stop/target unavailable = no signal when a documented safe fallback exists.
-
-## 6. Context Doctrine
-
-M30/M15 provide context. M5 primarily describes setup formation. M1 provides timing.
-
-Higher-timeframe context can strengthen, weaken or conflict with a setup.
-
-Neutral or conflicting context must not automatically veto a setup unless that context is intrinsically required by the definition of that specific setup family.
-
-Missing optional context is represented explicitly as unavailable/neutral, never silently converted into a directional value.
-
-## 7. Probability Doctrine
-
-A probability must identify:
-- event definition;
-- sample;
-- horizon;
-- conditioning variables;
-- outcome;
-- uncertainty;
-- calibration quality.
-
-Insufficient historical sample produces an INSUFFICIENT_SAMPLE state or label. It does not fabricate a probability and does not automatically suppress a structurally valid signal.
-
-Probability is research evidence. It is not a universal live gate unless a later version explicitly proves and documents such a rule for a defined setup family.
-
-## 8. Trade-Plan Fallback Doctrine
-
-Every setup family must have a deterministic hierarchy for entry, stop/invalidation, target and maximum horizon.
-
-If the preferred method is unavailable, the engine tries the documented fallback.
-
-If every safe method fails, the candidate is suppressed with an explicit reason such as INVALID_TRADE_PLAN.
-
-The engine must never silently convert preferred method unavailable into no signal.
-
-## 9. Setup Families
-
+## 4. Independent Setup Families
+The initial six families are:
 A. Liquidity sweep reversal
 B. Expansion-pullback continuation
 C. Breakout acceptance
@@ -114,91 +29,180 @@ D. Breakout failure
 E. Range rejection
 F. Structural pullback continuation
 
-Each family must be independently testable and independently observable in telemetry.
+Every family must have a versioned contract containing:
+- family definition;
+- required inputs;
+- minimum evidence;
+- optional evidence;
+- timeframe dependencies;
+- M1 trigger;
+- invalidation;
+- entry hierarchy;
+- stop hierarchy;
+- target hierarchy;
+- maximum lifetime;
+- duplicate identity;
+- re-arm rule.
 
-## 10. Opportunity States
+A timeframe or feature is mandatory only when that family contract explicitly declares it intrinsic.
 
+## 5. Minimum Actionable Path
+A candidate may become ACTIONABLE when:
+1. family-specific minimum setup exists;
+2. valid M1 trigger exists;
+3. required data is valid and fresh;
+4. executable entry exists;
+5. safe stop/invalidation exists;
+6. at least one valid target exists;
+7. maximum holding horizon is defined;
+8. candidate is not a genuine duplicate;
+9. explicit risk/safety rules permit action.
+
+Probability and ranking evidence are outside this mandatory chain.
+
+## 6. Hard-Gate Doctrine
+Hard gates are reserved for objective safety/data conditions:
+- invalid/stale required data;
+- impossible prices/OHLC;
+- timestamp corruption;
+- intrinsically required family input unavailable;
+- duplicate opportunity;
+- invalid trade geometry;
+- explicit risk-limit violation;
+- explicit configured safety blackout;
+- execution-safety failure.
+
+Prohibited blanket gates:
+- all indicators agree;
+- arbitrary model-agreement percentage;
+- universal score cutoff;
+- universal ATR cutoff;
+- universal probability cutoff;
+- insufficient sample = no signal;
+- preferred session = no signal;
+- high volatility = no signal;
+- low volatility = no signal;
+- neutral/conflicting M30/M15 = no signal;
+- preferred stop/target method unavailable = no signal when fallback exists.
+
+## 7. Feature Availability Contract
+Every feature exposes a state:
+AVAILABLE, UNAVAILABLE, INVALID.
+
+UNAVAILABLE optional evidence is not a directional zero and does not automatically suppress a candidate.
+
+Only a feature declared intrinsically required by the family can block that family.
+
+Global data invalidity can block the entire cycle.
+
+## 8. MTF Doctrine
+M30/M15 are contextual layers, M5 is commonly a formation layer, and M1 is the timing layer.
+
+These are architectural defaults, not universal mandatory gates.
+
+Each family contract declares its actual timeframe dependencies.
+
+Higher-timeframe conflict normally changes evidence/ranking rather than vetoing the setup.
+
+## 9. Probability Doctrine
+A probability must identify event, sample, horizon, conditioning variables, outcome, uncertainty and calibration.
+
+If sample is insufficient:
+- preserve the candidate;
+- label INSUFFICIENT_SAMPLE;
+- do not fabricate a probability;
+- do not suppress solely for insufficient history.
+
+Probability is research evidence unless a later setup-specific validated rule explicitly makes it safety-critical.
+
+## 10. Trade-Plan Fallback Doctrine
+Each family must define deterministic fallback hierarchies for entry, stop, target and horizon.
+
+Preferred → secondary → volatility-adjusted structural → documented safe fallback.
+
+If all safe methods fail, suppress with INVALID_TRADE_PLAN and record the exact failure.
+
+R:R is measured from independently justified entry/stop/target. R:R must never be used to manufacture an arbitrary target.
+
+## 11. Session, Volatility and Event Data
+Session and volatility influence priority, evidence and research stratification but do not universally disable signals.
+
+If event data is unavailable or unverified:
+EVENT_STATUS = UNKNOWN.
+
+UNKNOWN is not equivalent to NO_EVENT and is not equivalent to BLACKOUT.
+
+Only a verified, explicit, time-bounded, instrument-relevant event rule may create EXPLICIT_EVENT_BLACKOUT.
+
+## 12. Opportunity States
 OBSERVE → CANDIDATE → DEVELOPING → TRIGGERED → ACTIVE → CLOSED
 
-Or:
+Or DEVELOPING → EXPIRED.
 
-DEVELOPING → EXPIRED
+All transitions are causal and recorded.
 
-All transitions must be causal and recorded.
+## 13. Re-Arm and Expiry
+Each family defines a maximum lifetime.
 
-## 11. Suppression Ledger
+A candidate can re-arm only after explicit invalidation/expiry or a new structurally distinct setup anchor.
 
-Every candidate that fails to become actionable must carry an explicit reason.
+Duplicate identity must not block a genuinely new setup.
 
-Canonical reasons:
-- DATA_INVALID
-- DUPLICATE
-- NO_MINIMUM_SETUP
-- NO_TRIGGER
-- INVALID_TRADE_PLAN
-- RISK_LIMIT
-- EXPLICIT_EVENT_BLACKOUT
-- EXPIRED
-- OTHER_DOCUMENTED_REASON
+## 14. Suppression Ledger
+Every non-actionable candidate receives one explicit reason:
+DATA_INVALID
+DUPLICATE
+NO_MINIMUM_SETUP
+NO_TRIGGER
+INVALID_TRADE_PLAN
+RISK_LIMIT
+EXPLICIT_EVENT_BLACKOUT
+EXPIRED
+OTHER_DOCUMENTED_REASON
 
-NO_HIGH_EDGE is not a valid final suppression reason.
+NO_HIGH_EDGE is prohibited as a final suppression reason.
 
-## 12. Ranking Doctrine
+## 15. Actionability vs Ranking vs Execution Capacity
+These are separate layers:
+- ACTIONABILITY: is the opportunity valid and safely plan-able?
+- RANKING: how should valid opportunities be prioritized?
+- EXECUTION CAPACITY: can an account safely take/manage another position?
 
-The ranker orders already-actionable opportunities.
+Execution capacity cannot retroactively make a structurally invalid signal. Ranking cannot decide actionability.
 
-It must not require a universal score threshold to permit a signal.
+## 16. Daily Quota
+No trade quota exists. The engine never trades to satisfy a target count and never suppresses a valid opportunity because a count is high.
 
-Evidence scores, conflict scores, empirical expectancy, uncertainty, execution quality and maturity are ranking/research variables unless a setup-specific validated rule explicitly states otherwise.
+## 17. Warm-Up
+Insufficient history for an optional feature produces UNAVAILABLE.
 
-## 13. Sessions and Volatility
+Warm-up may block only a family whose declared minimum inputs are intrinsically unavailable.
 
-Session classification and volatility state affect search priority, evidence and ranking.
+EMA200, ATR percentiles and other long-history features must not globally starve the engine.
 
-They do not automatically disable the engine.
+## 18. Liveness Requirements
+Mandatory tests:
+1. valid setup + neutral M30/M15;
+2. valid setup + insufficient history;
+3. valid setup outside preferred session;
+4. one conflicting indicator;
+5. low research rank;
+6. stop fallback;
+7. target fallback;
+8. explicit suppression reason;
+9. independent family evaluation;
+10. one family failure does not stop another;
+11. high volatility;
+12. low volatility;
+13. session classification;
+14. duplicate vs genuine re-arm;
+15. event status UNKNOWN;
+16. optional feature unavailable;
+17. Telegram failure;
+18. execution-capacity limit separated from signal validity.
 
-The engine must remain capable of identifying valid opportunities outside preferred windows.
+## 19. Change Control
+Any new hard gate or new mandatory input must document exact condition, reason, affected families, false-negative risk and tests demonstrating no unintended starvation.
 
-High or extreme volatility does not universally mean no trade.
-
-Low or quiet volatility does not universally mean no trade.
-
-## 14. Daily Quota
-
-The engine does not trade to satisfy a target number of trades.
-
-It also does not suppress a valid setup because the daily count is already high.
-
-Actual opportunity frequency is measured.
-
-## 15. Liveness Requirements
-
-Before production strategy code is considered complete, tests must prove:
-1. valid setup can alert with neutral M30/M15 context;
-2. insufficient historical sample does not block a valid setup;
-3. valid setup can alert outside preferred sessions;
-4. one conflicting indicator does not kill a valid setup;
-5. candidate below a research ranking benchmark can still become actionable when its minimum path is complete;
-6. stop/target fallbacks work;
-7. every blocked candidate has a suppression reason;
-8. every setup family is evaluated independently;
-9. failure of one family does not stop another;
-10. high volatility does not universally suppress signals;
-11. low volatility does not universally suppress signals;
-12. session classification does not universally suppress signals.
-
-Runtime telemetry must expose candidates, developing setups, triggers, actionable opportunities, alerts and suppression reasons by family.
-
-## 16. Change Control
-
-Any new hard gate must document its exact condition, reason, affected setup families, false-negative risk and a test proving it does not create unintended starvation.
-
-## 17. Success
-
-Success requires evidence of repeatable positive expectancy after realistic costs and out-of-sample validation.
-
-Win rate alone is insufficient. Signal count alone is insufficient. Model agreement alone is insufficient.
-
-## 18. Final Rule
-
-Do not optimize the engine to look intelligent. Optimize it to be falsifiable, measurable, robust, live and useful while preserving every truthful path from a valid setup to an actionable signal.
+## 20. Final Rule
+Optimize for falsifiability, causal correctness, measurable opportunity discovery, realistic execution research and truthful signal paths — never for impressive-looking intelligence.
