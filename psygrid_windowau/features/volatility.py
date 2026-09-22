@@ -2,7 +2,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from math import sqrt
 from psygrid_windowau.data.models import Candle
-from .common import FeatureValue, available, invalid, unavailable
+from .common import FeatureValue, available, unavailable
 
 def true_ranges(candles: Sequence[Candle]) -> tuple[float,...]:
     if not candles: return ()
@@ -33,7 +33,9 @@ def realized_volatility(candles: Sequence[Candle], n: int) -> FeatureValue:
     from .common import log_returns
     rs=log_returns([c.close for c in candles])[-n:]
     if not rs: return unavailable(provenance=f"M1_LOG_RETURN_RV_{n}", as_of=candles[-1].timestamp, reason="no returns")
-    return available(sqrt(n)*sum((x-sum(rs)/len(rs))**2 for x in rs)/len(rs) ** 0.5, provenance=f"M1_LOG_RETURN_RV_{n}", as_of=candles[-1].timestamp)
+    avg=sum(rs)/n
+    sigma=sqrt(sum((x-avg)**2 for x in rs)/n)
+    return available(sqrt(n)*sigma, provenance=f"M1_LOG_RETURN_RV_{n}", as_of=candles[-1].timestamp)
 
 def percentile(value: float, history: Sequence[float]) -> FeatureValue:
     if not history: return unavailable(provenance="ROLLING_HISTORY", as_of=None, reason="empty distribution")
