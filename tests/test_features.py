@@ -2,8 +2,8 @@ from datetime import datetime, timedelta, timezone
 from math import isclose, log, sqrt
 from psygrid_windowau.data.models import Candle, FeatureState
 from psygrid_windowau.features.returns import simple_return, log_return
-from psygrid_windowau.features.volatility import true_ranges, atr, realized_volatility
-from psygrid_windowau.features.trend import ema, ema_slope
+from psygrid_windowau.features.volatility import true_ranges, atr, realized_volatility, atr_percentile
+from psygrid_windowau.features.trend import ema, ema_slope, directional_run_length, structural_counts
 from psygrid_windowau.features.vwap import session_vwap
 from psygrid_windowau.features.candle_geometry import geometry
 from psygrid_windowau.features.structure import prior_high, prior_low, compression_ratio, pullback_depth
@@ -67,3 +67,15 @@ def test_warmup_is_unavailable():
     xs=candles([1,2])
     assert ema(xs,3).state is FeatureState.UNAVAILABLE
     assert atr(xs,3).state is FeatureState.UNAVAILABLE
+
+
+def test_trend_run_and_structure_counts():
+    xs=candles([1,2,3,4,5])
+    assert directional_run_length(xs).value == 4
+    counts=structural_counts(xs,3)
+    assert counts["higher_highs"].value == 3
+    assert counts["higher_lows"].value == 3
+
+
+def test_atr_percentile_is_explicit_and_deterministic():
+    assert atr_percentile(3.0, [1.0,2.0,3.0,4.0]).value == 75.0
