@@ -189,3 +189,20 @@ The engine is not considered successful because it sends attractive Telegram mes
 ## Primary principle
 
 > **We are not building a machine that must produce trades. We are building a machine that discovers whether XAUUSD contains repeatable, measurable intraday opportunities — without suppressing genuine opportunities through excessive filtering.**
+
+
+## Canonical liveness contract
+
+The permanent decision path is:
+
+SETUP FAMILY → MINIMUM VALID SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM
+
+Ranking is prioritization, not a universal signal cutoff.
+
+Historical probability, perfect M30/M15 agreement, preferred session, preferred volatility state, or full indicator agreement must not become hidden prerequisites.
+
+Each setup family is evaluated independently. Optional evidence may be unavailable or conflicting without automatically suppressing a structurally valid setup.
+
+Every non-actionable candidate receives an explicit suppression reason. The engine never silently converts low confidence, low research rank, insufficient sample, or unavailable preferred methods into a generic no-signal decision.
+
+See docs/PROJECT_CONSTITUTION.md, docs/SIGNAL_ENGINE_SPEC.md and docs/ANTI_STARVATION_AUDIT.md for the canonical rules.
