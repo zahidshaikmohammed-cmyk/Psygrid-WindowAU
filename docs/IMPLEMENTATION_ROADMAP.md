@@ -82,6 +82,35 @@ Validation:
 
 Phase-2 boundary remains intact: no setup-family detection, trigger generation, ranking, Telegram runtime, broker execution or live signal generation was added.
 
+## Phase-2 LOCK
+
+Phase 2 — Mathematical Feature Engine is LOCKED for the current normative specification.
+
+Lock acceptance:
+- all seven Phase-2 feature modules are implemented;
+- every feature exposes value + availability state + provenance/as_of where applicable;
+- deterministic EMA initialization and recursive update are implemented;
+- deterministic ATR initialization and Wilder update are implemented;
+- zero cumulative feed-volume VWAP is UNAVAILABLE;
+- structural reference levels exclude the current candle;
+- realized volatility uses the specified log-return formulation;
+- ATR percentile capability is present;
+- trend persistence, run length and structural HH/HL counts are present;
+- causal-prefix regression coverage is present;
+- Phase-2 CI validation is green.
+
+Validation record:
+- GitHub Actions run: 35778691916 — SUCCESS;
+- validated commit: ed3f4187a2cbce92c9f07c09cc4d8725d6cb36b1.
+
+Locked boundary:
+- Phase 2 does not create setup candidates, triggers, trade plans, actionability decisions, ranking, Telegram notifications, broker orders, probabilities, or live trading.
+- Provider timestamp semantics remain UNVERIFIED; production temporal signal generation remains disabled.
+- No new mandatory feature or hard gate is introduced by this lock.
+
+Change control:
+Any modification to the locked Phase-2 mathematics or feature contract requires explicit change documentation, affected-test updates, and a new validation record before the Phase-2 lock can be considered changed.
+
 ## Phase 3 — Family contracts and setup detectors
 Before detector code, create one versioned contract per family.
 
