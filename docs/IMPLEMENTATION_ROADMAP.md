@@ -175,3 +175,30 @@ Phase 1 implementation may begin only after this gate is satisfied.
 
 ## Canonical source record
 The authoritative Phase-0 source definition is locked in `docs/CANONICAL_DATA_SOURCE.md`. The implementation must use the documented RealMarketAPI endpoint, XAUUSD extraction path and schema from that record; source changes require the documented change-control process.
+
+## Phase-1 implementation status
+
+Phase 1 data-layer implementation is complete for the currently locked contract.
+
+Implemented:
+- canonical RealMarketAPI XAUUSD parser;
+- strict canonical schema/type validation;
+- optional bid/ask handling;
+- feed-health metadata model;
+- explicit UNVERIFIED timestamp state;
+- verified-open-time forming/closed classification gate;
+- M1 data-quality validation;
+- duplicate/gap/order/freshness checks;
+- absolute UTC M5/M15/M30 aggregation;
+- complete-component-only higher-timeframe bars;
+- append-only observation capture;
+- Phase-1 automated test suite and GitHub Actions CI.
+
+Validation:
+- GitHub Actions CI: 24 passed;
+- latest validated implementation commit: 503ca9034653f80bcc22441f6176cbc5b03a4eec
+
+Important boundary:
+- provider timestamp semantics remain UNVERIFIED;
+- production temporal signal generation remains disabled;
+- no setup-family, trigger, ranking, Telegram runtime, broker execution, macro/news or live-trading implementation is part of Phase 1.
