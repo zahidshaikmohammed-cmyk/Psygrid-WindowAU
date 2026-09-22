@@ -54,3 +54,15 @@ DATA → QUALITY → MTF CONTEXT → SETUP FAMILIES → M1 TRIGGER → RISK PLAN
 ## Guiding sentence
 
 **Observe the market that actually exists, not the market we wish existed.**
+
+
+## Canonical liveness contract
+
+The engine's mandatory path is:
+
+SETUP FAMILY → MINIMUM VALID SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM
+
+Historical probability, perfect higher-timeframe agreement, preferred session, preferred volatility state, and full indicator agreement are not universal prerequisites.
+
+Every setup family is evaluated independently. Every suppressed candidate receives an explicit suppression reason. A missing preferred trade-plan method must use its documented safe fallback before the candidate can be suppressed.
+
