@@ -1,68 +1,45 @@
 # PSYGRID WindowAU — Project Description
 
 ## One-line description
+A Python XAUUSD intraday intelligence and signal engine that continuously evaluates independent structural setups while preserving a truthful path from valid setup to actionable signal.
 
-A Python XAUUSD intraday research and signal engine that hunts continuously for statistically supported setups without suppressing genuine opportunities through excessive hard filtering.
+## Canonical architecture
+DATA → QUALITY → MTF BUILDER → FEATURES → INDEPENDENT SETUP FAMILIES → MINIMUM SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM → OUTCOME → CALIBRATION
 
-## What this project is
-
-WindowAU is a dedicated Gold engine.
-
-It is not a generic multi-instrument scanner.
-
-Its job is to observe XAUUSD, understand the current market state, identify several possible structural behaviors, wait for a precise trigger, calculate a complete trade plan, and notify the user through Telegram.
-
-## What this project is not
-
-It is not:
-
-- a candle-direction guessing machine;
-- an indicator-crossing bot;
-- a fixed 90% probability generator;
-- a system that must produce exactly 3 or 4 trades every day;
-- a system that avoids all volatility;
-- a system that assumes every breakout works;
-- a backtest that uses future candle information.
+Broker execution is deliberately a later external layer.
 
 ## Engineering promise
+The engine can discover valid setups outside preferred sessions and without perfect indicator/MTF agreement.
 
-The engine must be capable of finding opportunities whenever a high-quality setup genuinely develops, including outside preferred session windows.
+Historical probability is evidence, not a universal prerequisite.
 
-Preferred/high-activity windows improve search priority but never create a trade.
+Missing optional features do not become false directional values and do not globally block the engine.
 
-Weak evidence is allowed to remain a candidate instead of being destroyed by a rigid gate.
+Every setup family has its own contract, trigger, trade-plan fallback, lifetime and re-arm rule.
 
-Strong evidence is allowed to reach the trigger stage even if one indicator disagrees.
+Every suppressed candidate has an explicit reason.
 
 ## Main objective
-
-Find out, with reproducible data, whether XAUUSD offers repeatable short-horizon opportunities under specific combinations of:
-
+Determine, with reproducible data, whether XAUUSD contains repeatable short-horizon opportunities under combinations of:
 - setup family;
-- market structure;
+- structure;
 - session;
 - volatility;
-- trigger behavior;
+- trigger;
 - execution conditions.
 
-Then trade only the behavior that survives research.
+## Actionability
+Minimum path:
+setup → M1 trigger → required data → executable entry → safe stop → target → horizon → duplicate check → risk/safety permission.
 
-## Core architecture
+Then:
+ACTIONABLE → RANK → TELEGRAM.
 
-DATA → QUALITY → MTF CONTEXT → SETUP FAMILIES → M1 TRIGGER → RISK PLAN → TELEGRAM → OUTCOME → CALIBRATION
+## Event data
+Event status is explicit:
+VERIFIED_EVENT, VERIFIED_NO_EVENT or UNKNOWN.
+
+UNKNOWN is never treated as VERIFIED_NO_EVENT or automatic BLACKOUT.
 
 ## Guiding sentence
-
-**Observe the market that actually exists, not the market we wish existed.**
-
-
-## Canonical liveness contract
-
-The engine's mandatory path is:
-
-SETUP FAMILY → MINIMUM VALID SETUP → M1 TRIGGER → SAFE TRADE PLAN → ACTIONABLE → RANK → TELEGRAM
-
-Historical probability, perfect higher-timeframe agreement, preferred session, preferred volatility state, and full indicator agreement are not universal prerequisites.
-
-Every setup family is evaluated independently. Every suppressed candidate receives an explicit suppression reason. A missing preferred trade-plan method must use its documented safe fallback before the candidate can be suppressed.
-
+Observe the market that actually exists, preserve every truthful opportunity path, and let measured outcomes determine what survives.
