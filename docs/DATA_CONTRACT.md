@@ -86,3 +86,38 @@ Provider failure never creates synthetic prices.
 Never silently switch providers.
 
 Any source change requires explicit configuration and documentation.
+
+
+## 12. Provider Timestamp Verification
+Timestamp semantics have an explicit state:
+- UNVERIFIED: provider meaning has not been independently established.
+- VERIFIED_OPEN_TIME: timestamp identifies the opening instant of the M1 interval.
+- VERIFIED_OTHER: another documented semantic has been verified.
+
+Initial implementation must start UNVERIFIED. Verification must compare provider timestamps against observed candle transitions and elapsed intervals across multiple sessions, document the evidence, and store the verified semantic in configuration/test fixtures.
+
+While UNVERIFIED, raw capture and data-quality diagnostics are allowed, but production signal decisions requiring temporal interpretation are not.
+
+## 13. Absolute Timeframe Alignment
+All internal timestamps are UTC. M5/M15/M30 bars use absolute epoch-minute bucket boundaries:
+- M5: floor(epoch_minutes / 5) × 5
+- M15: floor(epoch_minutes / 15) × 15
+- M30: floor(epoch_minutes / 30) × 30
+
+Only the complete set of component M1 intervals belonging to a bucket may close that higher-timeframe bar. No rolling aggregation is permitted.
+
+## 14. Observation-Level Capture
+Raw capture is append-only. Each observation records:
+- observation_timestamp;
+- provider_timestamp;
+- candle_state = FORMING or CLOSED;
+- observed OHLCV;
+- symbol/source;
+- feed status;
+- freshness;
+- connection state.
+
+A later observation of the same forming candle is a new observation, not an overwrite of historical knowledge. Replay uses only observations whose observation_timestamp is <= decision time.
+
+## 15. Zero-Volume VWAP
+If cumulative feed volume for the session is zero, VWAP state is UNAVAILABLE. The engine must not substitute a price, zero, or prior VWAP as though it were a calculated value.
