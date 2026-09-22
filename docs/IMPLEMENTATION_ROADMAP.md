@@ -126,7 +126,7 @@ Each detector returns a structured candidate and never a raw BUY/SELL string.
 
 ## Phase-3 implementation status
 
-Phase 3 — Six Setup Families is implementation-complete for the current frozen contracts; final post-audit runtime validation remains the Phase-4 entry gate.
+Phase 3 — Six Setup Families is COMPLETE AND VALIDATED for the current frozen contracts. The post-audit validation gate is closed.
 
 Implemented:
 - structured SetupCandidate model with family, direction, causal anchor, evidence, parameters and stable identity;
@@ -141,8 +141,10 @@ Implemented:
 - insufficient-history behavior returns no candidate rather than fabricated evidence;
 - detector parameter validation;
 - independent family/direction test coverage;
-- Phase-3 validation suite: prior isolated execution passed; post-audit contract fixes require a fresh full-suite validation before Phase 4;
-- final validation PR #2 merged into main at commit aff3337ee88f0e1a1c8ad5193d25e3075a355bda.
+- Phase-3 validation suite: fresh post-audit GitHub Actions validation passed 54 tests with zero failures;
+- final validation PR #2 merged into main at commit aff3337ee88f0e1a1c8ad5193d25e3075a355bda;
+- post-audit validation commit: 4efc274c243e1f9305e4f228079af122b9f976b7;
+- GitHub Actions run 35781896563: SUCCESS, 54 passed.
 
 Phase-3 boundary:
 - detectors return structured candidates, not BUY/SELL strings;
@@ -152,8 +154,8 @@ Phase-3 boundary:
 - provider timestamp semantics remain UNVERIFIED, so production temporal signal generation remains disabled.
 
 Validation note:
-- The connected GitHub Actions interface has not exposed a workflow/status result for the post-audit commits, so no CI-green claim is made here.
-- The Phase-3 test suite itself was executed independently and passed 10/10.
+- Fresh GitHub Actions validation is green: run 35781896563 completed successfully with 54 passed and 0 failed.
+- The validation includes the post-audit LSR subsequent-candle correction, corrected fixtures, expanded negative-path coverage, and causal-prefix coverage.
 
 ## Phase 4 — M1 trigger engine
 Module: trigger/m1.py
