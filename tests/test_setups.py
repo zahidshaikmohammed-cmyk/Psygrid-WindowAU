@@ -88,3 +88,8 @@ def test_invalid_detector_parameters_are_explicit():
     with pytest.raises(ValueError): detect_boa(x, lookback=0)
     with pytest.raises(ValueError): detect_epc(x, baseline_lookback=0)
     with pytest.raises(ValueError): detect_spc(x, swing_lookback=0)
+
+
+
+def test_phase3_validation_marker():
+    assert all(f.value for f in SetupFamily)
