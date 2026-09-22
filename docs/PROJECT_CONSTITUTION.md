@@ -206,3 +206,27 @@ Any new hard gate or new mandatory input must document exact condition, reason, 
 
 ## 20. Final Rule
 Optimize for falsifiability, causal correctness, measurable opportunity discovery, realistic execution research and truthful signal paths — never for impressive-looking intelligence.
+
+
+## 21. Final Phase-0 Locks
+The six versioned family contracts are frozen in docs/SETUP_FAMILY_CONTRACTS.md.
+
+Actionability is a market-structure/safety property, not an account-capacity property:
+- ACTIONABLE means the detected opportunity has a valid minimum path and a safe deterministic plan.
+- EXECUTION_CAPACITY records whether a particular account can actually add/manage exposure.
+- Account margin, existing exposure, daily risk budget, broker availability and similar capacity constraints must not rewrite a valid market signal as NO_SETUP.
+- Strategy-level safety rules may block actionability when explicitly defined and independently testable.
+
+Provider timestamp semantics have a mandatory verification state:
+UNVERIFIED → verification procedure → VERIFIED_OPEN_TIME (or another explicitly documented verified semantic).
+No live signal calculation may silently assume timestamp meaning while it is UNVERIFIED.
+
+Raw capture is append-only at observation level. Each observation records:
+observation_timestamp, provider_timestamp, candle_state, candle values as observed, source, symbol, feed status and freshness.
+Replay may expose only values observed by the historical decision timestamp. A later snapshot must never overwrite earlier information in replay.
+
+Deterministic mathematical conventions are locked:
+- M1/M5/M15/M30 boundaries are aligned to absolute UTC minute buckets.
+- EMA initialization uses the simple mean of the first n completed closes; recursive EMA begins on the next observation.
+- ATR initialization uses the simple mean of the first n completed true ranges; recursive Wilder-style updates begin thereafter.
+- VWAP with zero cumulative feed volume is UNAVAILABLE, never fabricated.
