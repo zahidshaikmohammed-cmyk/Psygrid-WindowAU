@@ -88,6 +88,12 @@ class RealMarketApiClient:
 
     def parse_snapshot(self, payload: dict) -> FeedSnapshot:
         _require_exact_keys(payload, REQUIRED_ENVELOPE_FIELDS, "response")
+        if not isinstance(payload["provider"], str):
+            raise DataContractError("provider must be a string")
+        if not isinstance(payload["service"], str):
+            raise DataContractError("service must be a string")
+        if not isinstance(payload["timeframe"], str):
+            raise DataContractError("timeframe must be a string")
         if payload["provider"] != CANONICAL_PROVIDER:
             raise DataContractError("unexpected provider")
         if payload["service"] != CANONICAL_SERVICE:
@@ -144,6 +150,8 @@ class RealMarketApiClient:
                         ask=_optional_numeric_field(raw_candle.get("ask"), "ask"),
                     )
                 )
+            except DataContractError:
+                raise
             except (TypeError, ValueError) as exc:
                 raise DataContractError(
                     f"candles_1m[{index}] contains invalid values"
