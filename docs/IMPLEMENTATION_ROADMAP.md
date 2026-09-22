@@ -82,7 +82,7 @@ Validation:
 
 Phase-2 boundary remains intact: no setup-family detection, trigger generation, ranking, Telegram runtime, broker execution or live signal generation was added.
 
-## Phase 3 — Family contracts and setup detectors/
+## Phase 3 — Family contracts and setup detectors
 Before detector code, create one versioned contract per family.
 
 Modules:
