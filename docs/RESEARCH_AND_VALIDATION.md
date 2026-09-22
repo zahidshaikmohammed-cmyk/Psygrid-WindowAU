@@ -118,3 +118,25 @@ Eventually report:
 - session statistics;
 - volatility statistics;
 - data quality.
+
+
+## 14. Observation-Causal Replay Invariant
+Raw capture must preserve observation_timestamp separately from provider/candle timestamp and candle_state.
+
+For every replay decision time t:
+1. include only observations with observation_timestamp <= t;
+2. reconstruct the latest known state of each candle from those observations;
+3. never replace a historical forming observation with a later final observation;
+4. if intrabar path is insufficient to reproduce a decision faithfully, delay that decision until the candle is closed.
+
+A replay test must deliberately feed multiple observations of one forming candle and prove that the later high/low/close cannot appear in the earlier decision state.
+
+## 15. Timestamp Verification Gate
+Replay and live signal calculations must use only a timestamp semantic marked VERIFIED by the provider-verification procedure. UNVERIFIED data may be captured for diagnosis but cannot silently drive temporal decisions.
+
+## 16. Deterministic Calculation Conventions
+Replay tests must lock:
+- absolute UTC M5/M15/M30 bucket alignment;
+- EMA seed;
+- ATR seed and Wilder update;
+- zero-volume VWAP = UNAVAILABLE.
