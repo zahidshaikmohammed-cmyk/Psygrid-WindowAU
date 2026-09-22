@@ -228,3 +228,19 @@ Telegram delivery is an output side effect, not part of signal validity.
 
 ## 22. Core Principle
 Minimum safety path first. Ranking second. Notification third.
+
+
+## 23. Final Phase-0 Clarifications
+The six family contracts are normative and versioned in docs/SETUP_FAMILY_CONTRACTS.md. Detector code must implement those contracts without adding undocumented mandatory gates.
+
+ACTIONABILITY and EXECUTION_CAPACITY are separate:
+- ACTIONABILITY answers whether the market opportunity has a valid, safe, executable signal plan.
+- EXECUTION_CAPACITY answers whether a specific account may safely take/manage the position.
+- Account-level capacity restrictions are recorded in risk_status/execution_status and do not convert a valid signal into NO_SETUP.
+- Explicit strategy safety rules may block ACTIONABILITY only when documented by the family/constitution.
+
+Timestamp semantics must be VERIFIED before production signal calculation. While UNVERIFIED, the feed may be captured and inspected but cannot be treated as a verified live decision source.
+
+All MTF bars use absolute UTC bucket boundaries. A completed 5-minute bar contains exactly its five completed M1 buckets; 15-minute and 30-minute bars are constructed analogously. No rolling-window boundary is permitted.
+
+Raw observations preserve observation time separately from candle time/state. Replay is observation-causal and must never replace an earlier forming-candle observation with a later final candle state.
