@@ -37,8 +37,12 @@ def realized_volatility(candles: Sequence[Candle], n: int) -> FeatureValue:
     sigma=sqrt(sum((x-avg)**2 for x in rs)/n)
     return available(sqrt(n)*sigma, provenance=f"M1_LOG_RETURN_RV_{n}", as_of=candles[-1].timestamp)
 
-def percentile(value: float, history: Sequence[float]) -> FeatureValue:
-    if not history: return unavailable(provenance="ROLLING_HISTORY", as_of=None, reason="empty distribution")
+def percentile(value: float, history: Sequence[float], *, as_of=None) -> FeatureValue:
+    if not history: return unavailable(provenance="ROLLING_HISTORY", as_of=as_of, reason="empty distribution")
     xs=sorted(float(x) for x in history)
     rank=sum(x<=value for x in xs)
-    return available(100.0*rank/len(xs), provenance="ROLLING_HISTORY", as_of=None)
+    return available(100.0*rank/len(xs), provenance="ROLLING_HISTORY", as_of=as_of)
+
+
+def atr_percentile(current_atr: float, historical_atr: Sequence[float], *, as_of=None) -> FeatureValue:
+    return percentile(current_atr, historical_atr, as_of=as_of)
