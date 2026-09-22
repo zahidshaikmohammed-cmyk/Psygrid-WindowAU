@@ -1,79 +1,88 @@
 # PSYGRID WindowAU — Data Contract
 
-## 1. Primary source
-
-Initial production source:
-
-RealMarketAPI M1 XAUUSD feed.
+## 1. Primary Source
+Initial source: RealMarketAPI M1 XAUUSD feed.
 
 Expected candle fields:
+timestamp, open, high, low, close, volume.
 
-- timestamp
-- open
-- high
-- low
-- close
-- volume
+Bid/ask are optional.
 
-Bid/ask may be present.
+## 2. Candle Semantics
+Timestamp is treated as candle opening time until provider semantics are verified.
 
-## 2. Candle semantics
-
-The timestamp is treated as the candle opening time unless the provider contract proves otherwise.
-
-This must be verified before live deployment.
-
-## 3. Closed candle
-
-A candle is closed only after its interval ends under the verified provider semantics.
+A candle is CLOSED only after its interval ends under verified semantics.
 
 Never use final OHLC before close.
 
-## 4. Aggregation
+## 3. Aggregation
+Completed k-minute bar:
+Open = first M1 open
+High = maximum M1 high
+Low = minimum M1 low
+Close = last M1 close
+Volume = sum M1 volume
 
-For a completed k-minute bar:
+Only completed component candles form a completed higher-timeframe candle.
 
-Open = first M1 open  
-High = maximum M1 high  
-Low = minimum M1 low  
-Close = last M1 close  
-Volume = sum of M1 volume
-
-Only completed component candles may form a completed higher timeframe candle.
-
-## 5. Quality checks
-
-- timestamp monotonicity;
-- duplicate detection;
+## 4. Quality
+Check:
+- monotonic timestamps;
+- duplicates;
 - OHLC consistency;
 - non-negative volume;
-- gap detection;
+- gaps;
 - freshness;
 - symbol identity;
 - source identity.
 
-## 6. Gaps
+Required data failure blocks only the affected family unless the entire feed is invalid.
 
-Represent gaps explicitly.
+## 5. Feature Availability
+Every derived feature has:
+AVAILABLE / UNAVAILABLE / INVALID.
 
-Do not silently fabricate prices.
+UNAVAILABLE means no reliable value is available at decision time.
 
-A setup depending on missing data becomes uncertain rather than being treated as normal.
+INVALID means the available value violates integrity checks.
 
-## 7. Forming state
+Optional UNAVAILABLE does not become a directional zero and does not globally block the engine.
 
+## 6. Warm-Up
+Features requiring history may be UNAVAILABLE during warm-up.
+
+The engine may preload verified historical M1 data.
+
+Long warm-up features such as EMA200 must not globally suppress signal generation.
+
+## 7. Forming State
 Every series exposes:
-
 - closed;
 - forming;
 - as_of.
 
-This is mandatory for replay correctness.
+A forming candle may be observed for display/monitoring but final OHLC is not available to the decision engine until close.
 
-## 8. Provider failure
+## 8. Gaps
+Represent gaps explicitly.
 
-Provider failure must never create synthetic prices.
+Do not fabricate prices.
 
-## 9. Source substitution
+A family requiring missing data is blocked for that family and receives DATA_INVALID or an appropriate documented reason.
 
-Do not silently switch providers. Any source change requires explicit documentation/configuration.
+## 9. Optional Bid/Ask and Volume
+Bid/ask absence does not globally block structural signal generation.
+
+Volume is treated as feed-volume unless its semantics are verified.
+
+VWAP must carry its source label, e.g. FEED_VOLUME.
+
+If a family intrinsically requires spread/execution data, absence may block that family or live execution only.
+
+## 10. Provider Failure
+Provider failure never creates synthetic prices.
+
+## 11. Source Substitution
+Never silently switch providers.
+
+Any source change requires explicit configuration and documentation.
