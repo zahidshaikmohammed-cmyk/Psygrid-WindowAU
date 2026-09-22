@@ -68,7 +68,7 @@ def test_detectors_are_causal_to_supplied_prefix():
     prefix = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11.5), (11.5, 12, 11.1, 11.7)])
     future = prefix + cs([(11.7, 20, 11.5, 19)])
     before = detect_boa(prefix, lookback=2)
-    replayed = detect_boa(future[:3], lookback=2)
+    replayed = detect_boa(future[:4], lookback=2)
     assert before and replayed
     assert before.identity == replayed.identity
 
@@ -112,7 +112,7 @@ def test_bof_requires_reentry_after_break():
 
 
 def test_rre_requires_rejection_toward_range_interior():
-    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 12)])
+    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 10, 12)])
     long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 8)])
     assert detect_rre(short, lookback=2) is None
     assert detect_rre(long, lookback=2) is None
