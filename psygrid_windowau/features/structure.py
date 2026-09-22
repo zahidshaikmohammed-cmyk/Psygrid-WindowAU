@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections.abc import Sequence
+from statistics import median
 from psygrid_windowau.data.models import Candle
 from .common import FeatureValue, available, unavailable
 
