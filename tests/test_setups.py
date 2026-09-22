@@ -113,7 +113,7 @@ def test_bof_requires_reentry_after_break():
 
 def test_rre_requires_rejection_toward_range_interior():
     short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 10, 12)])
-    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 8)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 10.5, 8, 8)])
     assert detect_rre(short, lookback=2) is None
     assert detect_rre(long, lookback=2) is None
 
