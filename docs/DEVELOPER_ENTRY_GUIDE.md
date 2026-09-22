@@ -335,8 +335,8 @@ A correct implementation:
 - future macro/news extension point: RESERVED;
 - Telegram repository secrets: CONFIGURED;
 - Phase 1 data-layer implementation: COMPLETE;
-- Phase 2 mathematical feature engine: COMPLETE;
+- Phase 2 mathematical feature engine: COMPLETE AND LOCKED;
 - production signal generation: NOT ENABLED;
 - broker execution: NOT IMPLEMENTED.
 
-The next engineering task is Phase 3 setup-family detector implementation.
+Phase 2 is locked under the roadmap change-control record. The next engineering task is Phase 3 setup-family detector implementation.
