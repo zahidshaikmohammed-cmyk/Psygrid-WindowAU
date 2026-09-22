@@ -94,6 +94,12 @@ class RealMarketApiClient:
             raise DataContractError("unexpected service")
         if payload["timeframe"] != CANONICAL_TIMEFRAME:
             raise DataContractError("unexpected timeframe")
+        if not isinstance(payload["schema_version"], str):
+            raise DataContractError("schema_version must be a string")
+        if payload["schema_version"] != "1.0":
+            raise DataContractError("unsupported schema_version")
+        if not isinstance(payload["service"], str) or not isinstance(payload["provider"], str) or not isinstance(payload["timeframe"], str):
+            raise DataContractError("service, provider and timeframe must be strings")
         if not isinstance(payload["universe_size"], int) or isinstance(payload["universe_size"], bool):
             raise DataContractError("universe_size must be an integer")
         symbols = payload["symbols"]
@@ -104,8 +110,13 @@ class RealMarketApiClient:
 
         symbol_data = symbols[CANONICAL_SYMBOL]
         _require_exact_keys(symbol_data, REQUIRED_SYMBOL_FIELDS, "symbols.XAUUSD")
-        if symbol_data["symbol"] != CANONICAL_SYMBOL:
+        if not isinstance(symbol_data["symbol"], str) or symbol_data["symbol"] != CANONICAL_SYMBOL:
             raise DataContractError("XAUUSD symbol identity mismatch")
+        if not isinstance(symbol_data["websocket_connected"], bool) or not isinstance(symbol_data["m1_valid"], bool):
+            raise DataContractError("websocket_connected and m1_valid must be booleans")
+        for field in ("reconnect_count", "gap_recoveries", "rejected_count"):
+            if not isinstance(symbol_data[field], int) or isinstance(symbol_data[field], bool):
+                raise DataContractError(f"{field} must be an integer")
         if not isinstance(symbol_data["candles_1m"], list):
             raise DataContractError("candles_1m must be an array")
 
@@ -124,13 +135,13 @@ class RealMarketApiClient:
                 candles.append(
                     Candle(
                         timestamp=parse_utc(raw_candle["timestamp"]),
-                        open=float(raw_candle["open"]),
-                        high=float(raw_candle["high"]),
-                        low=float(raw_candle["low"]),
-                        close=float(raw_candle["close"]),
-                        volume=float(raw_candle["volume"]),
-                        bid=None if raw_candle.get("bid") is None else float(raw_candle["bid"]),
-                        ask=None if raw_candle.get("ask") is None else float(raw_candle["ask"]),
+                        open=_numeric_field(raw_candle["open"], "open"),
+                        high=_numeric_field(raw_candle["high"], "high"),
+                        low=_numeric_field(raw_candle["low"], "low"),
+                        close=_numeric_field(raw_candle["close"], "close"),
+                        volume=_numeric_field(raw_candle["volume"], "volume"),
+                        bid=_optional_numeric_field(raw_candle.get("bid"), "bid"),
+                        ask=_optional_numeric_field(raw_candle.get("ask"), "ask"),
                     )
                 )
             except (TypeError, ValueError) as exc:
@@ -174,3 +185,15 @@ def _require_exact_keys(value: object, required: tuple[str, ...], label: str) ->
         raise DataContractError(
             f"{label} schema mismatch; missing={missing}, extra={extra}"
         )
+
+
+def _numeric_field(value: object, field: str) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise DataContractError(f"{field} must be numeric")
+    return float(value)
+
+
+def _optional_numeric_field(value: object, field: str) -> float | None:
+    if value is None:
+        return None
+    return _numeric_field(value, field)
