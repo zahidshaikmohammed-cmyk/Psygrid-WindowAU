@@ -157,3 +157,17 @@ Only after validation and explicit deployment approval.
 - deterministic risk;
 - continuous runtime health;
 - no silent starvation.
+
+
+## Phase-0 exit gate
+Phase 0 is GREEN only when:
+- docs/SETUP_FAMILY_CONTRACTS.md exists and all six contracts are versioned;
+- ACTIONABILITY vs EXECUTION_CAPACITY is explicit and tested;
+- timestamp semantics have an implementation-level UNVERIFIED/VERIFIED state;
+- observation-level capture schema is locked;
+- causal replay invariant is specified;
+- timeframe bucket alignment is deterministic;
+- EMA/ATR/VWAP initialization behavior is deterministic;
+- the final architecture audit passes with no unresolved blockers.
+
+Phase 1 implementation may begin only after this gate is satisfied.
