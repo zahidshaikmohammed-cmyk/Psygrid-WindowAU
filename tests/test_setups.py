@@ -17,7 +17,7 @@ def cs(rows):
 
 
 def test_lsr_long_and_short_minimum_setup():
-    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 11), (11, 13, 8, 9.5)])
+    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 11), (11, 15, 10, 13.5)])
     long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 11), (11, 12, 6, 10)])
     assert detect_lsr(short, lookback=3).direction is SetupDirection.SHORT
     assert detect_lsr(long, lookback=3).direction is SetupDirection.LONG
@@ -32,14 +32,14 @@ def test_boa_requires_break_and_persistence():
 
 def test_bof_long_and_short_are_independent():
     short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11), (11, 13, 8, 9.5)])
-    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 9), (9, 10, 8, 10.5)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 10.5, 8, 9), (9, 10.5, 8.5, 10.5)])
     assert detect_bof(short, lookback=2).direction is SetupDirection.SHORT
     assert detect_bof(long, lookback=2).direction is SetupDirection.LONG
 
 
 def test_rre_long_and_short():
-    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11)])
-    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 9.5)])
+    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 10.5)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 10, 8, 9.5)])
     assert detect_rre(short, lookback=2).direction is SetupDirection.SHORT
     assert detect_rre(long, lookback=2).direction is SetupDirection.LONG
 
@@ -64,7 +64,7 @@ def test_candidates_have_lifetime_and_stable_identity():
 
 
 def test_detectors_are_causal_to_supplied_prefix():
-    prefix = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13)])
+    prefix = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11.5), (11.5, 12, 11.1, 11.7)])
     future = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13), (13, 20, 12, 19)])
     before = detect_boa(prefix, lookback=2)
     replayed = detect_boa(future[:3], lookback=2)
