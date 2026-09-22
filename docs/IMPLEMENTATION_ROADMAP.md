@@ -163,7 +163,7 @@ Only after validation and explicit deployment approval.
 Phase 0 is GREEN only when:
 - docs/SETUP_FAMILY_CONTRACTS.md exists and all six contracts are versioned;
 - ACTIONABILITY vs EXECUTION_CAPACITY is explicit and tested;
-- timestamp semantics have an implementation-level UNVERIFIED/VERIFIED state;
+- timestamp semantics have a defined implementation contract with UNVERIFIED/VERIFIED states; Phase 1 must implement this state before any production temporal signal calculation;
 - observation-level capture schema is locked;
 - causal replay invariant is specified;
 - timeframe bucket alignment is deterministic;
