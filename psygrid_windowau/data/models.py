@@ -94,6 +94,7 @@ class FeedHealth:
 class FeedSnapshot:
     health: FeedHealth
     candles: tuple[Candle, ...]
+    timestamp_status: TimestampStatus = TimestampStatus.UNVERIFIED
 
 
 @dataclass(frozen=True)
