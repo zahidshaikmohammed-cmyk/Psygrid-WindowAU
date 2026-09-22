@@ -16,11 +16,12 @@ def cs(rows):
     return tuple(Candle(base + timedelta(minutes=i), o, h, l, c, 1) for i, (o, h, l, c) in enumerate(rows))
 
 
-def test_lsr_long_and_short_minimum_setup():
-    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 11), (11, 13, 8, 9.5)])
-    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 11), (11, 12, 6, 10)])
+def test_lsr_long_and_short_require_subsequent_return_candle():
+    short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13), (13, 13.5, 11, 11.5)])
+    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 9), (9, 10, 8.5, 11.5)])
     assert detect_lsr(short, lookback=3).direction is SetupDirection.SHORT
     assert detect_lsr(long, lookback=3).direction is SetupDirection.LONG
+    assert detect_lsr(short[:-1], lookback=3) is None
 
 
 def test_boa_requires_break_and_persistence():
