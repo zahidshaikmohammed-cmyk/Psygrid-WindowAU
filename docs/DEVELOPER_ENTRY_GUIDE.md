@@ -336,7 +336,7 @@ A correct implementation:
 - Telegram repository secrets: CONFIGURED;
 - Phase 1 data-layer implementation: COMPLETE;
 - Phase 2 mathematical feature engine: COMPLETE AND LOCKED;
-- Phase 3 six setup-family detectors: COMPLETE AND AUDITED;
+- Phase 3 six setup-family detectors: IMPLEMENTED; pre-Phase-4 contract audit fixes applied; final runtime validation pending;
 - production signal generation: NOT ENABLED;
 - broker execution: NOT IMPLEMENTED.
 
