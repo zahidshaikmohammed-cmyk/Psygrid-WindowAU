@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from .models import Candle, DataQualityState, QualityIssue, QualityReport, finite_number
+from .models import Candle, CandleState, DataQualityState, QualityIssue, QualityReport, TimestampStatus, finite_number
 
 XAUUSD_MIN_PRICE = 0.0
 
@@ -71,3 +71,25 @@ def is_fresh(freshness: float, max_age_seconds: float) -> bool:
     if freshness < 0 or max_age_seconds < 0:
         raise ValueError("freshness values must be non-negative")
     return freshness <= max_age_seconds
+
+
+def classify_candle_state(
+    *,
+    candle_timestamp: datetime,
+    observation_time: datetime,
+    timestamp_status: TimestampStatus,
+    interval_minutes: int = 1,
+) -> CandleState:
+    """Classify a candle only when timestamp semantics are verified as opening time."""
+    if timestamp_status is not TimestampStatus.VERIFIED_OPEN_TIME:
+        raise RuntimeError(
+            "candle state cannot be temporally classified while timestamp semantics are UNVERIFIED"
+        )
+    if interval_minutes <= 0:
+        raise ValueError("interval_minutes must be positive")
+    candle_start = candle_timestamp.astimezone(timezone.utc)
+    observed = observation_time.astimezone(timezone.utc)
+    candle_end = candle_start + timedelta(minutes=interval_minutes)
+    if observed < candle_start:
+        raise ValueError("observation time precedes candle timestamp")
+    return CandleState.CLOSED if observed >= candle_end else CandleState.FORMING
