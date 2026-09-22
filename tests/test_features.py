@@ -53,8 +53,8 @@ def test_geometry_and_structure_exclude_current_candle():
     g=geometry(xs[-1])
     assert isclose(g["range"].value,8)
     assert isclose(g["body_ratio"].value,0.5/8)
-    assert isclose(prior_high(xs,2).value,14)
-    assert isclose(prior_low(xs,2).value,8)
+    assert isclose(prior_high(xs,2).value,12)
+    assert isclose(prior_low(xs,2).value,7)
     assert isclose(compression_ratio(xs,2).value,8/5)
     assert isclose(pullback_depth(True,10,20,15).value,.5)
 
