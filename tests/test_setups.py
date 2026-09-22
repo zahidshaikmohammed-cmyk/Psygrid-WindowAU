@@ -39,7 +39,7 @@ def test_bof_long_and_short_are_independent():
 
 
 def test_rre_long_and_short():
-    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11)])
+    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 10.5)])
     long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 9.5)])
     assert detect_rre(short, lookback=2).direction is SetupDirection.SHORT
     assert detect_rre(long, lookback=2).direction is SetupDirection.LONG
