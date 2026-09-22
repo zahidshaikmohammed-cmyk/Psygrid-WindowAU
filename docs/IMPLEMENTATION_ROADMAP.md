@@ -78,7 +78,7 @@ Implemented and tested:
 
 Validation:
 - GitHub Actions CI run 35778416893: success;
-- latest validated commit: cee5397a36f1e7e136c917d1afa3b418713d2b60.
+- latest validated commit: ed3f4187a2cbce92c9f07c09cc4d8725d6cb36b1.
 
 Phase-2 boundary remains intact: no setup-family detection, trigger generation, ranking, Telegram runtime, broker execution or live signal generation was added.
 
