@@ -88,3 +88,9 @@ def test_invalid_detector_parameters_are_explicit():
     with pytest.raises(ValueError): detect_boa(x, lookback=0)
     with pytest.raises(ValueError): detect_epc(x, baseline_lookback=0)
     with pytest.raises(ValueError): detect_spc(x, swing_lookback=0)
+
+
+
+def test_all_six_family_types_are_distinct():
+    families = {SetupFamily.LSR, SetupFamily.EPC, SetupFamily.BOA, SetupFamily.BOF, SetupFamily.RRE, SetupFamily.SPC}
+    assert len(families) == 6
