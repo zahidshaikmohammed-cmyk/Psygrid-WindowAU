@@ -281,3 +281,18 @@ Every feature must be reproducible from information available at t.
 4. Calibration
 5. Opportunity frequency
 6. Efficiency
+
+
+## 26. Deterministic Initialization and Time Alignment
+EMA initialization for period n:
+EMA_n(t_n) = mean(C_1 ... C_n) using the first n completed observations; recursive EMA begins at t_(n+1).
+
+ATR initialization for period n:
+ATR_n(t_n) = mean(TR_1 ... TR_n) using the first n completed true ranges; subsequent values use Wilder smoothing:
+ATR_t = ((n-1)×ATR_(t-1) + TR_t) / n.
+
+M1/M5/M15/M30 aggregation uses absolute UTC bucket boundaries, never rolling boundaries.
+
+VWAP is UNAVAILABLE when cumulative feed volume is zero. It is never inferred from price or carried forward as a calculated value.
+
+These conventions are implementation invariants and must be covered by unit tests.
