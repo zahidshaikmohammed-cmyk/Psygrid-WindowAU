@@ -79,3 +79,14 @@ def test_trend_run_and_structure_counts():
 
 def test_atr_percentile_is_explicit_and_deterministic():
     assert atr_percentile(3.0, [1.0,2.0,3.0,4.0]).value == 75.0
+
+
+def test_feature_values_are_causal_to_supplied_history():
+    xs=candles([10,11,12,13])
+    before=ema(xs,3).value
+    extended=candles([10,11,12,13,99])
+    # The feature at the same supplied decision point is calculated from the
+    # same prefix; a later observation is not part of that decision input.
+    prefix=extended[:-1]
+    assert isclose(before, ema(prefix,3).value)
+    assert isclose(prior_high(prefix,2).value, prior_high(xs,2).value)
