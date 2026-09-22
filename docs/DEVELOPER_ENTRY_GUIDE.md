@@ -336,7 +336,8 @@ A correct implementation:
 - Telegram repository secrets: CONFIGURED;
 - Phase 1 data-layer implementation: COMPLETE;
 - Phase 2 mathematical feature engine: COMPLETE AND LOCKED;
+- Phase 3 six setup-family detectors: COMPLETE AND AUDITED;
 - production signal generation: NOT ENABLED;
 - broker execution: NOT IMPLEMENTED.
 
-Phase 2 is locked under the roadmap change-control record. The next engineering task is Phase 3 setup-family detector implementation.
+Phase 2 is locked under the roadmap change-control record. Phase 3 has been implemented and audited. The next engineering task is Phase 4 family-specific M1 trigger implementation.
