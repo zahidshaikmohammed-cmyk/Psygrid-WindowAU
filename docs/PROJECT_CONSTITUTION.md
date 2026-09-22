@@ -230,3 +230,7 @@ Deterministic mathematical conventions are locked:
 - EMA initialization uses the simple mean of the first n completed closes; recursive EMA begins on the next observation.
 - ATR initialization uses the simple mean of the first n completed true ranges; recursive Wilder-style updates begin thereafter.
 - VWAP with zero cumulative feed volume is UNAVAILABLE, never fabricated.
+
+
+## Canonical source record
+The authoritative Phase-0 source definition is locked in `docs/CANONICAL_DATA_SOURCE.md`. The implementation must use the documented RealMarketAPI endpoint, XAUUSD extraction path and schema from that record; source changes require the documented change-control process.
