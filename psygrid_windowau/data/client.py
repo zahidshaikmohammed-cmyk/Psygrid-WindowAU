@@ -129,8 +129,8 @@ class RealMarketApiClient:
                         low=float(raw_candle["low"]),
                         close=float(raw_candle["close"]),
                         volume=float(raw_candle["volume"]),
-                        bid=None if raw_candle["bid"] is None else float(raw_candle["bid"]),
-                        ask=None if raw_candle["ask"] is None else float(raw_candle["ask"]),
+                        bid=None if raw_candle.get("bid") is None else float(raw_candle["bid"]),
+                        ask=None if raw_candle.get("ask") is None else float(raw_candle["ask"]),
                     )
                 )
             except (TypeError, ValueError) as exc:
