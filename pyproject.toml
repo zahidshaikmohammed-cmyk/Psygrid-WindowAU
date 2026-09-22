@@ -9,6 +9,11 @@ description = "PSYGRID WindowAU technical XAUUSD intraday intelligence engine"
 requires-python = ">=3.12"
 dependencies = []
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8,<9",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
