@@ -55,3 +55,17 @@ def test_bid_ask_are_optional():
     assert len(snapshot.candles) == 2
     assert snapshot.candles[0].bid is None
     assert snapshot.candles[0].ask is None
+
+
+def test_wrong_provider_type_fails():
+    payload = deepcopy(PAYLOAD)
+    payload["provider"] = 123
+    with pytest.raises(DataContractError, match="provider must be a string"):
+        RealMarketApiClient().parse_snapshot(payload)
+
+
+def test_string_ohlc_value_fails():
+    payload = deepcopy(PAYLOAD)
+    payload["symbols"]["XAUUSD"]["candles_1m"][0]["close"] = "4354.423"
+    with pytest.raises(DataContractError, match="close must be numeric"):
+        RealMarketApiClient().parse_snapshot(payload)
