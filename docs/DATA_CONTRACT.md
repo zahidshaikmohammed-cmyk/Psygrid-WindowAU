@@ -121,3 +121,62 @@ A later observation of the same forming candle is a new observation, not an over
 
 ## 15. Zero-Volume VWAP
 If cumulative feed volume for the session is zero, VWAP state is UNAVAILABLE. The engine must not substitute a price, zero, or prior VWAP as though it were a calculated value.
+
+
+## 16. Confirmed RealMarketAPI Payload Shape
+Observed live endpoint:
+`http://140.245.226.102:8080/public/live.json`
+
+The observed response envelope is:
+
+```json
+{
+  "schema_version": "1.0",
+  "service": "pysgrid-forex",
+  "provider": "realmarketapi",
+  "timeframe": "M1",
+  "generated_at": "ISO-8601 UTC timestamp",
+  "status": "ok",
+  "universe_size": 10,
+  "symbols": {
+    "XAUUSD": {
+      "symbol": "XAUUSD",
+      "market_state": "open",
+      "status": "ok",
+      "last_candle_timestamp": "ISO-8601 UTC timestamp",
+      "updated_at": "ISO-8601 UTC timestamp",
+      "websocket_connected": true,
+      "reconnect_count": 144,
+      "gap_recoveries": 5,
+      "rejected_count": 129,
+      "candles_1m": [
+        {
+          "timestamp": "ISO-8601 UTC timestamp",
+          "open": 4353.205,
+          "high": 4355.245,
+          "low": 4352.772,
+          "close": 4354.423,
+          "volume": 169,
+          "bid": null,
+          "ask": null
+        }
+      ],
+      "m1_valid": true
+    }
+  }
+}
+```
+
+The implementation must parse this exact hierarchy:
+
+`response["symbols"]["XAUUSD"]["candles_1m"]`
+
+The endpoint is a multi-symbol endpoint, but WindowAU is intentionally scoped to **XAUUSD only**. The client must not scan or generate setup candidates for the other symbols.
+
+Provider fields such as `websocket_connected`, `reconnect_count`, `gap_recoveries`, `rejected_count`, `status`, `market_state`, `generated_at` and `updated_at` are retained as feed-quality metadata.
+
+The payload visibly contains `bid: null` and `ask: null`; this is valid under the current contract because bid/ask are optional and their absence must not globally block structural XAUUSD analysis.
+
+The observed endpoint confirms the presence of genuine one-minute OHLCV records in the payload. It does **not by itself prove** that the candle timestamp is an opening timestamp; that remains subject to the timestamp-verification procedure above.
+
+The client must fail explicitly on malformed/missing required envelope fields rather than silently falling back to another schema such as `instruments`, `candles`, or `candles_l1`.
