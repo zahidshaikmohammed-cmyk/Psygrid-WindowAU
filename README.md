@@ -2,6 +2,24 @@
 
 PSYGRID WindowAU is a dedicated Python research and signal engine for XAUUSD (Gold).
 
+## Developer entry point
+
+If you are entering this repository to build WindowAU, read docs/DEVELOPER_ENTRY_GUIDE.md first. It explains the complete project, document authority, current scope, exact architecture, implementation order, hard constraints, and Phase-1 acceptance requirements.
+
+### Current build status
+
+- Phase-0 architecture: **LOCKED**
+- Canonical XAUUSD source: **LOCKED**
+- Six setup-family contracts: **LOCKED**
+- Technical-only current scope: **LOCKED**
+- Future macro/news extension: **RESERVED, NOT IMPLEMENTED**
+- Telegram repository secrets: **CONFIGURED**
+- Python implementation: **NOT YET BUILT**
+- Production signal generation: **NOT ENABLED**
+- Broker execution: **NOT IMPLEMENTED**
+
+The next build target is **Phase 1 — Data Layer**. Do not invent alternate data sources or skip directly to strategy/execution code.
+
 ## Mission
 
 Build a precise, empirical, session-aware intraday engine that can detect multiple types of opportunity without relying on a single rigid pattern or a giant collection of hard gates.
