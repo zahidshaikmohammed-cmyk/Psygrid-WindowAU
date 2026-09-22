@@ -94,3 +94,44 @@ def test_invalid_detector_parameters_are_explicit():
 
 def test_phase3_validation_marker():
     assert all(f.value for f in SetupFamily)
+
+
+def test_lsr_same_candle_breach_and_close_is_not_subsequent_return():
+    x = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 13)])
+    assert detect_lsr(x, lookback=2) is None
+
+
+def test_boa_does_not_trigger_without_acceptance_persistence():
+    x = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11.5), (11.5, 11.8, 10.5, 10.8)])
+    assert detect_boa(x, lookback=2) is None
+
+
+def test_bof_requires_reentry_after_break():
+    x = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 11.5), (11.5, 13, 11, 12.5)])
+    assert detect_bof(x, lookback=2) is None
+
+
+def test_rre_requires_rejection_toward_range_interior():
+    short = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 12, 9, 12)])
+    long = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 11, 8, 8)])
+    assert detect_rre(short, lookback=2) is None
+    assert detect_rre(long, lookback=2) is None
+
+
+def test_epc_rejects_pullback_that_breaks_impulse_extreme():
+    x = cs([(10, 11, 9, 10), (10, 11, 9, 10), (10, 14, 9, 13), (13, 13.5, 8.5, 9)])
+    assert detect_epc(x, baseline_lookback=2, expansion_multiple=1.5, max_pullback_bars=3) is None
+
+
+def test_spc_rejects_pullback_that_breaks_structural_boundary():
+    x = cs([(10, 11, 9, 10), (10, 12, 9.5, 11.5), (11.5, 13, 10.5, 12.5), (12.5, 12.7, 9, 10), (10, 10.5, 9.5, 10.2)])
+    assert detect_spc(x, swing_lookback=2, pullback_bars=2) is None
+
+
+def test_all_families_have_directional_and_negative_paths():
+    assert detect_lsr(cs([(10,11,9,10),(10,12,9,11),(11,14,10,13),(13,13.5,11,11.5)]), lookback=3)
+    assert detect_epc(cs([(10,11,9,10),(10,11,9,10),(10,14,9,13),(13,13.5,11.5,12.5),(12.5,13,12,12.8)]), baseline_lookback=2, expansion_multiple=1.5, max_pullback_bars=3)
+    assert detect_boa(cs([(10,11,9,10),(10,11,9,10),(10,12,9,11.5),(11.5,12,11.1,11.7)]), lookback=2)
+    assert detect_bof(cs([(10,11,9,10),(10,11,9,10),(10,12,9,11),(11,13,8,9.5)]), lookback=2)
+    assert detect_rre(cs([(10,11,9,10),(10,11,9,10),(10,12,9,10.5)]), lookback=2)
+    assert detect_spc(cs([(10,11,9,10),(10,12,9.5,11.5),(11.5,13,10.5,12.5),(12.5,12.7,11.8,12),(12,12.2,11.7,12.1)]), swing_lookback=2, pullback_bars=2)
