@@ -18,7 +18,7 @@ def cs(rows):
 
 def test_lsr_long_and_short_minimum_setup():
     short = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 14, 10, 11), (11, 13, 8, 9.5)])
-    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 11), (11, 12, 10, 12)])
+    long = cs([(10, 11, 9, 10), (10, 12, 9, 11), (11, 12, 7, 11), (11, 12, 6, 10)])
     assert detect_lsr(short, lookback=3).direction is SetupDirection.SHORT
     assert detect_lsr(long, lookback=3).direction is SetupDirection.LONG
 
