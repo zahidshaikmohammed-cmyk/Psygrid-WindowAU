@@ -186,6 +186,7 @@ The engine is not considered successful because it sends attractive Telegram mes
 - docs/DATA_CONTRACT.md
 - docs/CANONICAL_DATA_SOURCE.md
 - docs/IMPLEMENTATION_ROADMAP.md
+- docs/FUTURE_MACRO_NEWS_EXTENSION.md
 
 ## Primary principle
 
