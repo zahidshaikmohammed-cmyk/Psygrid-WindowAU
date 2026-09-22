@@ -40,6 +40,8 @@ class SetupCandidate:
             raise ValueError("observed_timestamp cannot precede anchor_timestamp")
         if not self.evidence:
             raise ValueError("candidate must record minimum evidence")
+        if any(not isinstance(x, str) or not x for x in self.evidence):
+            raise ValueError("candidate evidence must contain non-empty strings")
 
     @property
     def identity(self) -> tuple[str, str, str, int]:
